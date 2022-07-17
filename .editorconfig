@@ -1,0 +1,59 @@
+root = true
+
+[*.cs]
+
+#pragma warning disable SA1312, S1481
+
+# SonarAnalyzers suppressions
+
+# S101:  Rename class to match pascal case naming rules.
+# Allow interfaces without I prefix.
+dotnet_diagnostic.S101.severity = none
+# S3903: Move class into a named namespace. (C# 10)
+# Probably a bug. Allow top level namespace declaration.
+dotnet_diagnostic.S3903.severity = none
+
+# Ignore serialization issues
+dotnet_diagnostic.S3925.severity = none
+
+# Allow phantom types
+dotnet_diagnostic.S2326.severity = none
+
+# Check for commented out code is too sensitive.
+dotnet_diagnostic.S125.severity = none
+
+
+# StyleCop suppressions
+
+# Allow local calls without this. prefix
+dotnet_diagnostic.SA1101.severity = none
+# Allow opening brace on same line (java/k&r style)
+dotnet_diagnostic.SA1500.severity = none
+# Allow placing ) just like }
+dotnet_diagnostic.SA1111.severity = none
+dotnet_diagnostic.SA1009.severity = none
+# Allow compact definition of empty / single line elements.
+dotnet_diagnostic.SA1502.severity = none
+# We don't care about file headers
+dotnet_diagnostic.SA1633.severity = none
+# Allow interfaces without I prefix. No hungarian notation.
+dotnet_diagnostic.SA1302.severity = none
+# Allow inline placement of type constraints.
+dotnet_diagnostic.SA1127.severity = none
+# Allow compact single line constructors
+dotnet_diagnostic.SA1128.severity = none
+# Allow omitting { } where possible
+dotnet_diagnostic.SA1503.severity = none
+# Allow compact spacing between attributes
+dotnet_diagnostic.SA1134.severity = none
+# Allow blank line preceeding first element in class
+dotnet_diagnostic.SA1505.severity = none
+# Allow single letter type parameters which aren't T
+dotnet_diagnostic.SA1314.severity = none
+# We don't care about xml documentation
+dotnet_diagnostic.SA0001.severity = none
+# Allow compact lists of methods and properties.
+dotnet_diagnostic.SA1516.severity = none
+# Allow _ (disacard) variable
+dotnet_diagnostic.SA1312.severity = none
+

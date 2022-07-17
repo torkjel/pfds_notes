@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>Torkjel.PFDS_Notes</PackageId>
+    <PackageDescription>Notes relating to Purely Functional Data Structures book.</PackageDescription>
+    <OutputType>exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <Version>0.0.1</Version>
+    <Authors>Torkjel</Authors>
+    <Company>NA</Company>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RepositoryUrl>https://github.com/torkjel/pfds_notes</RepositoryUrl>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference
+      Include="SonarAnalyzer.CSharp"
+      Version="8.29.0.36737"
+      PrivateAssets="all"
+      Condition="$(MSBuildProjectExtension) == '.csproj'"
+    />
+
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118"/>
+
+  </ItemGroup>
+
+</Project>
