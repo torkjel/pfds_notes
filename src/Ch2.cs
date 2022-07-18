@@ -44,10 +44,12 @@ public static class ListOps {
     public static bool IsEmpty<T>(this Lst<T> lst) => lst == Empty<T>();
     public static Lst<T> Cons<T>(this T x, Lst<T> s) => new CONS<T>(x, s);
     public static Lst<T> Cons<T>(this T x, T y) => x.Cons(y.Cons(Empty<T>()));
+
     public static T Head<T>(this Lst<T> xs) => xs switch {
         CONS<T>(var x, _) => x,
         _ => throw new EmptyException() // Nil case
     };
+
     public static Lst<T> Tail<T>(this Lst<T> xs) => xs switch {
         CONS<T>(_, var xs_) => xs_,
         _=> throw new EmptyException() // Nil case
@@ -70,18 +72,64 @@ public static class ListOps {
     };
 }
 
+// Tree datatype:
+// datatype Tree EmptyTree | TreeNode of Tree x Elem x Tree
+public abstract record Tree<T>;
+
+public sealed record EmptyTree<T> : Tree<T> {
+    public override string ToString() => "E";
+}
+
+public sealed record TreeNode<T>(Tree<T> l, T elem, Tree<T> r) : Tree<T> {
+    public override string ToString() => $"({l}, {elem}, {r})";
+}
+
+// Figure 2.7 + Figure 2.9
+// So, this would be an instance of a Set type class, if C# allowed that.
+public static class TreeOps {
+    public static Tree<T> Empty<T>() => new EmptyTree<T>();
+    public static Tree<T> Insert<T>(this Tree<T> tree, T elem) where T : System.IComparable<T> => tree switch {
+        EmptyTree<T> => new TreeNode<T>(Empty<T>(), elem, Empty<T>()),
+        TreeNode<T>(var l, var e, var r) when (Ord<T>)elem < e => new TreeNode<T>(l.Insert<T>(elem), e, r),
+        TreeNode<T>(var l, var e, var r) when (Ord<T>)elem > e => new TreeNode<T>(l, e, r.Insert<T>(elem)),
+        _ => tree // elem == e case
+    };
+    public static bool Member<T>(this Tree<T> tree, T elem) where T : System.IComparable<T> => tree switch {
+        TreeNode<T>(var l, var e, _) when (Ord<T>)elem < e => l.Member(elem),
+        TreeNode<T>(_, var e, var r) when (Ord<T>)elem > e => r.Member(elem),
+        TreeNode<T>(_, var e, _) when (Ord<T>)elem == e => true,
+        _ => false // EmptyTree case
+    };
+}
+
+// Utility class providing comparison operators for IComparable<T> instances.
+// Why isn't this built in?
+public record Ord<T>(T elem) : System.IComparable<T> where T : System.IComparable<T> {
+    public T Elem => elem;
+
+    public int CompareTo(T? other) => elem.CompareTo(other);
+
+    public static bool operator >(Ord<T> a, T b) => a.CompareTo(b) > 0;
+    public static bool operator <(Ord<T> a, T b) => a.CompareTo(b) < 0;
+
+    public static implicit operator Ord<T>(T elem) => new Ord<T>(elem);
+    public static implicit operator T(Ord<T> ord) => ord.Elem;
+}
+
 public static class Run {
 
     public static void Main(string[] args) {
         WriteLine();
-        ShowConcat();
+        ShowListConcat();
         WriteLine();
-        ShowUpdate();
+        ShowListUpdate();
         WriteLine();
-        ShowSuffixes();
+        ShowListSuffixes();
+        WriteLine();
+        ShowTreeInsert();
     }
 
-    public static void ShowConcat() {
+    public static void ShowListConcat() {
         WriteLine("Figure 2.5: Concatentating two lists");
 
         var xs = 0.Cons(1.Cons(2));
@@ -95,7 +143,7 @@ public static class Run {
         WriteLine("zx : " + zs);
     }
 
-    public static void ShowUpdate() {
+    public static void ShowListUpdate() {
         WriteLine("Figure 2.6: Update an element of a list");
 
         var xs = 0.Cons(1.Cons(2.Cons(3.Cons(4))));
@@ -106,12 +154,21 @@ public static class Run {
         WriteLine("ys : " + ys);
     }
 
-    public static void ShowSuffixes() {
+    public static void ShowListSuffixes() {
         WriteLine("Exersice 2.1: Suffixes");
 
         var xs = 1.Cons(2.Cons(3.Cons(4)));
         var ys = xs.Suffixes();
         WriteLine("in : " + xs);
         WriteLine("out : " + ys);
+    }
+
+    public static void ShowTreeInsert() {
+        WriteLine("Figure 2.8 Insert");
+
+        var t = TreeOps.Empty<char>().Insert('d').Insert('b').Insert('a').Insert('c').Insert('g').Insert('f').Insert('h');
+        WriteLine("in : " + t);
+        var t_ = t.Insert('e');
+        WriteLine("out : " + t_);
     }
 }
